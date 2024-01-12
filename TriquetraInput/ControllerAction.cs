@@ -442,12 +442,12 @@ namespace Triquetra.Input
 
         public static void Print(Binding binding, int joystickValue)
         {
-            Debug.Log($"Triquetra.Input: Axis is {binding.Offset}. Value is {joystickValue}");
+            Plugin.Write($"Triquetra.Input: Axis is {binding.Offset}. Value is {joystickValue}");
         }
 
         internal static void TryGetSticks()
         {
-            if (TriquetraInput.IsFlyingScene())
+            if (Plugin.IsFlyingScene())
             {
                 if (Joystick.joystick == null)
                     Joystick.joystick = Joystick.FindJoystick();

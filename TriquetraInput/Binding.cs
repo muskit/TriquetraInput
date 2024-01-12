@@ -148,7 +148,7 @@ namespace Triquetra.Input
             {
                 ControllerActions.Print(this, joystickValue);
             }
-            if (TriquetraInput.IsFlyingScene()) // Only try and get throttle in a flying scene
+            if (Plugin.IsFlyingScene()) // Only try and get throttle in a flying scene
             {
                 if (OutputAction == ControllerAction.Throttle)
                 {

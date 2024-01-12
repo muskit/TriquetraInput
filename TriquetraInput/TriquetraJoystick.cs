@@ -64,6 +64,8 @@ namespace Triquetra.Input
             {
                 foreach(Binding binding in Binding.Bindings)
                 {
+                    if (binding.IsKeyboard) continue;
+
                     if (binding.Controller.Properties.JoystickId == this.Properties.JoystickId)
                     {
                         if (binding.Offset == update.Offset)

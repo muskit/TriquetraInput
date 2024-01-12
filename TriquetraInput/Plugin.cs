@@ -11,19 +11,25 @@ using UnityEngine.SceneManagement;
 
 namespace Triquetra.Input
 {
-    public class TriquetraInput : VTOLMOD
+    public class Plugin : VTOLMOD
     {
+
+        public static Plugin Instance;
+
+        private GameObject imguiObject;
+        private static string bindingsPath;
+
+        public static void Write(object msg)
+        {
+            Instance.Log(msg);
+        }
+
         public override void ModLoaded()
         {
             Instance = this;
             base.ModLoaded();
             Enable();
         }
-        public static TriquetraInput Instance;
-
-        private GameObject imguiObject;
-        private static string bindingsPath;
-
 
         public void Enable()
         {
@@ -33,7 +39,6 @@ namespace Triquetra.Input
             GameObject.DontDestroyOnLoad(imguiObject);
 
             bindingsPath = PilotSaveManager.saveDataPath + "/triquetrainput.xml";
-
             LoadBindings();
         }
 
@@ -62,6 +67,7 @@ namespace Triquetra.Input
                 serializer.Serialize(writer, Binding.Bindings);
             }
         }
+
         public static void LoadBindings()
         {
             XmlSerializer serializer = new XmlSerializer(Binding.Bindings.GetType());

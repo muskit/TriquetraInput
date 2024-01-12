@@ -51,16 +51,16 @@ namespace Triquetra.Input
                 {
                     if (GUILayout.Button("Load"))
                     {
-                        TriquetraInput.LoadBindings();
+                        Plugin.LoadBindings();
                     }
                     if (GUILayout.Button("Save"))
                     {
-                        TriquetraInput.SaveBindings();
+                        Plugin.SaveBindings();
                     }
                 }
                 catch (Exception e)
                 {
-                    TriquetraInput.Instance.Log(e.Message);
+                    Plugin.Instance.Log(e.Message);
                 }
             }
             GUILayout.EndHorizontal();
@@ -664,7 +664,7 @@ namespace Triquetra.Input
             TriquetraInputJoysticks.PollActiveJoysticks();
             TriquetraInputJoysticks.HandleKeyboardBindings();
 
-            if (TriquetraInput.IsFlyingScene())
+            if (Plugin.IsFlyingScene())
             {
                 ControllerActions.Joystick.UpdateStick();
                 ControllerActions.Joystick.UpdateThumbstick();
