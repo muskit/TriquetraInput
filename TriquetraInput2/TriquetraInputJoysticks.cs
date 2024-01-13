@@ -38,9 +38,25 @@ namespace Triquetra.Input
         {
             if (activeJoysticks == null || activeJoysticks.Count == 0)
                 return;
-            foreach(TriquetraJoystick joystick in activeJoysticks)
+            for (int i = 0; i < activeJoysticks.Count; ++i)
             {
-                joystick.Poll();
+                var joystick = activeJoysticks[i];
+                try
+                {
+                    joystick.Poll();
+                }
+                catch (SharpDX.SharpDXException e)
+                {
+                    if (e.ToString().Contains("DIERR_INPUTLOST"))
+                    {
+                        Plugin.Write($"WARNING: tried to poll missing missing joystick; removing from active...");
+                        activeJoysticks.RemoveAt(i);
+                    }
+                    else
+                    {
+                        Plugin.Write($"ERROR: exception occurred while trying to poll joystick:\n{e.ToString()}");
+                    }
+                }
             }
         }
 

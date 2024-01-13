@@ -102,7 +102,8 @@ namespace Triquetra.Input
                 return GameObject.FindObjectsOfType<VRLever>(false).Where(l => l?.GetComponent<VRInteractable>()?.interactableName == "Flaps").FirstOrDefault();
             }
         }
-
+        
+        // TODO: countermeasures, alt. controls (from holding trigger on throttle)
         public static class Helicopter
         {
             internal static VRThrottle power;
