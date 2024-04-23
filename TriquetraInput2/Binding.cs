@@ -212,6 +212,14 @@ namespace Triquetra.Input
                 {
                     ControllerActions.Flaps.CycleFlaps(this, joystickValue);
                 }
+                else if (OutputAction == ControllerAction.Visor)
+                {
+                    ControllerActions.Helmet.ToggleVisor(this, joystickValue);
+                }
+                else if (OutputAction == ControllerAction.NightVisionGoggles)
+                {
+                    ControllerActions.Helmet.ToggleNVG(this, joystickValue);
+                }
                 else if (OutputAction == ControllerAction.PTT)
                 {
                     ControllerActions.Radio.PTT(this, joystickValue);

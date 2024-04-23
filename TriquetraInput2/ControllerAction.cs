@@ -26,6 +26,8 @@ namespace Triquetra.Input
         FlapsCycle,
         SwitchWeapon,
         // LandingGear,
+        Visor,
+        NightVisionGoggles,
         PTT,
         VRInteract,
         Print
@@ -60,6 +62,41 @@ namespace Triquetra.Input
             internal static CockpitTeamRadioManager FindRadioManager()
             {
                 return GameObject.FindObjectOfType<CockpitTeamRadioManager>();
+            }
+        }
+        public static class Helmet
+        {
+            private static HelmetController helmetController;
+
+            public static void ToggleVisor(Binding binding, int joystickValue, int delta = 1)
+            {
+                if (helmetController == null)
+                    helmetController = FindHelmetController();
+                if (helmetController == null)
+                    return;
+
+                if (binding.GetButtonPressed(joystickValue))
+                {
+                    helmetController.ToggleVisor();
+                }
+            }
+
+            public static void ToggleNVG(Binding binding, int joystickValue, int delta = 1)
+            {
+                if (helmetController == null)
+                    helmetController = FindHelmetController();
+                if (helmetController == null)
+                    return;
+
+                if (binding.GetButtonPressed(joystickValue))
+                {
+                    helmetController.ToggleNVG();
+                }
+            }
+
+            private static HelmetController FindHelmetController()
+            {
+                return GameObject.FindObjectsOfType<HelmetController>(false).First();
             }
         }
 
@@ -102,7 +139,7 @@ namespace Triquetra.Input
                 return GameObject.FindObjectsOfType<VRLever>(false).Where(l => l?.GetComponent<VRInteractable>()?.interactableName == "Flaps").FirstOrDefault();
             }
         }
-        
+
         // TODO: countermeasures, alt. controls (from holding trigger on throttle)
         public static class Helicopter
         {
