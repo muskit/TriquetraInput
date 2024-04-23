@@ -55,7 +55,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="TriquetraInteractions">
-      <HintPath>..\..\dependencies\TriquetraInteractions.dll</HintPath>
+      <HintPath>..\dependencies\TriquetraInteractions.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>P:\games\Steam\steamapps\common\VTOL VR\VTOLVR_Data\Managed\UnityEngine.dll</HintPath>
