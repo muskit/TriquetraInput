@@ -286,6 +286,72 @@ namespace Triquetra.Input
                                 binding.VRInteractName = GUILayout.TextField(binding.VRInteractName);
                             }
                             GUILayout.EndHorizontal();
+                            
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("└ VRInteract Type: " + binding.VRInteractType);
+                                if (GUILayout.Button(binding.VRInteractTypeSelectOpen ? "Cancel" : "Select"))
+                                {
+                                    binding.VRInteractTypeSelectOpen = !binding.VRInteractTypeSelectOpen;
+                                }
+                            }
+                            GUILayout.EndHorizontal();
+
+                            if (binding.VRInteractTypeSelectOpen)
+                            {
+                                foreach (VRInteractType interactType in Enum.GetValues(typeof(VRInteractType)))
+                                {
+                                    if (GUILayout.Button(interactType.ToString()))
+                                    {
+                                        binding.VRInteractType = interactType;
+                                        binding.VRInteractTypeSelectOpen = false;
+                                    }
+                                }
+                            }
+                            
+                            if (binding.VRInteractType == VRInteractType.FixedValue)
+                            {
+                                GUILayout.BeginHorizontal();
+                                {
+                                    GUILayout.Label("Fixed Value: ");
+                                    GUILayout.Label(binding.Value.ToString());
+                                    binding.Value = (int)GUILayout.HorizontalSlider(binding.Value, 0, 8);
+                                }
+                                GUILayout.EndHorizontal();
+                            }
+                        }
+                        else if (binding.OutputAction == ControllerAction.MFDInteract || binding.OutputAction == ControllerAction.MMFDInteract)
+                        {
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("MFD Index: ");
+                                GUILayout.Label(binding.Value.ToString());
+                                binding.Value = (int)GUILayout.HorizontalSlider(binding.Value, 0, 3);
+                            }
+                            GUILayout.EndHorizontal();
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("└ MFD Action: " + binding.MFDAction);
+                                if (GUILayout.Button(binding.MFDActionSelectOpen ? "Cancel" : "Select"))
+                                {
+                                    binding.MFDActionSelectOpen = !binding.MFDActionSelectOpen;
+                                }
+                            }
+                            GUILayout.EndHorizontal();
+
+                            if (binding.MFDActionSelectOpen)
+                            {
+                                foreach (MFDAction mfdAction in Enum.GetValues(typeof(MFDAction)))
+                                {
+                                    if (binding.OutputAction == ControllerAction.MMFDInteract && mfdAction < MFDAction.TogglePower)
+                                        continue;
+                                    if (GUILayout.Button(mfdAction.ToString()))
+                                    {
+                                        binding.MFDAction           = mfdAction;
+                                        binding.MFDActionSelectOpen = false;
+                                    }
+                                }
+                            }
                         }
 
                         if (binding.OutputActionSelectOpen)
@@ -536,6 +602,72 @@ namespace Triquetra.Input
                                 binding.VRInteractName = GUILayout.TextField(binding.VRInteractName);
                             }
                             GUILayout.EndHorizontal();
+                            
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("└ VRInteract Type: " + binding.VRInteractType);
+                                if (GUILayout.Button(binding.VRInteractTypeSelectOpen ? "Cancel" : "Select"))
+                                {
+                                    binding.VRInteractTypeSelectOpen = !binding.VRInteractTypeSelectOpen;
+                                }
+                            }
+                            GUILayout.EndHorizontal();
+
+                            if (binding.VRInteractTypeSelectOpen)
+                            {
+                                foreach (VRInteractType interactType in Enum.GetValues(typeof(VRInteractType)))
+                                {
+                                    if (GUILayout.Button(interactType.ToString()))
+                                    {
+                                        binding.VRInteractType = interactType;
+                                        binding.VRInteractTypeSelectOpen = false;
+                                    }
+                                }
+                            }
+                            
+                            if (binding.VRInteractType == VRInteractType.FixedValue)
+                            {
+                                GUILayout.BeginHorizontal();
+                                {
+                                    GUILayout.Label("  └ Fixed Value: ");
+                                    GUILayout.Label(binding.Value.ToString());
+                                    binding.Value = (int)GUILayout.HorizontalSlider(binding.Value, 0, 8);
+                                }
+                                GUILayout.EndHorizontal();
+                            }
+                        }
+                        else if (binding.OutputAction == ControllerAction.MFDInteract || binding.OutputAction == ControllerAction.MMFDInteract)
+                        {
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("MFD Index: ");
+                                GUILayout.Label(binding.Value.ToString());
+                                binding.Value = (int)GUILayout.HorizontalSlider(binding.Value, 0, 3);
+                            }
+                            GUILayout.EndHorizontal();
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("└ MFD Action: " + binding.MFDAction);
+                                if (GUILayout.Button(binding.MFDActionSelectOpen ? "Cancel" : "Select"))
+                                {
+                                    binding.MFDActionSelectOpen = !binding.MFDActionSelectOpen;
+                                }
+                            }
+                            GUILayout.EndHorizontal();
+
+                            if (binding.MFDActionSelectOpen)
+                            {
+                                foreach (MFDAction mfdAction in Enum.GetValues(typeof(MFDAction)))
+                                {
+                                    if (binding.OutputAction == ControllerAction.MMFDInteract && mfdAction < MFDAction.TogglePower)
+                                        continue;
+                                    if (GUILayout.Button(mfdAction.ToString()))
+                                    {
+                                        binding.MFDAction           = mfdAction;
+                                        binding.MFDActionSelectOpen = false;
+                                    }
+                                }
+                            }
                         }
 
                         if (binding.Controller != null)
@@ -669,6 +801,7 @@ namespace Triquetra.Input
                 ControllerActions.Joystick.UpdateStick();
                 ControllerActions.Joystick.UpdateThumbstick();
                 ControllerActions.Throttle.UpdateThumbstick();
+                ControllerActions.Autopilot.UpdateAutopilot();
             }
         }
 

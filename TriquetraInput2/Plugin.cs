@@ -80,6 +80,12 @@ namespace Triquetra.Input
                         Binding.Bindings = (List<Binding>)serializer.Deserialize(reader);
                     }
                 }
+
+                var devices = Binding.directInput.GetDevices().Where(Binding.IsJoystick).ToList();
+                foreach (var binding in Binding.Bindings)
+                {
+                    binding.CreateController(devices);
+                }
             }
         }
     }

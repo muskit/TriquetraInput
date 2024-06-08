@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Triquetra.Input
     public enum ControllerAction
     {
         None,
+        ResetPosition,
         Throttle,
         HeloPower,
         Pitch,
@@ -24,17 +26,79 @@ namespace Triquetra.Input
         FlapsIncrease,
         FlapsDecrease,
         FlapsCycle,
+        Flaps0,
+        Flaps1,
+        Flaps2,
         SwitchWeapon,
         // LandingGear,
         Visor,
+        OpenVisor,
+        CloseVisor,
         NightVisionGoggles,
+        NightVisionGogglesOn,
+        NightVisionGogglesOff,
         PTT,
         VRInteract,
+        MFDInteract,
+        MMFDInteract,
+        AutopilotHeadingLeft,
+        AutopilotHeadingRight,
+        AutopilotAltitudeUp,
+        AutopilotAltitudeDown,
+        AutopilotSpeedUp,
+        AutopilotSpeedDown,
+        AutopilotCourseLeft,
+        AutopilotCourseRight,
         Print
     }
 
+    public enum VRInteractType
+    {
+        Default,
+        FixedValue
+    }
+
+    public enum MFDAction
+    {
+        L1,
+        L2,
+        L3,
+        L4,
+        L5,
+        R1,
+        R2,
+        R3,
+        R4,
+        R5,
+        T1,
+        T2,
+        T3,
+        T4,
+        T5,
+        B1,
+        B2,
+        B3,
+        B4,
+        B5,
+        TogglePower,
+        TurnOn,
+        TurnOff,
+        None
+    }
+    
+    
+
     public static class ControllerActions
     {
+        public static class Head
+        {
+            public static void ResetPosition(Binding binding, int joystickValue)
+            {
+                if (binding.GetButtonPressed(joystickValue))
+                    VRHead.ReCenter();
+            }
+        }
+        
         public static class Radio
         {
             internal static CockpitTeamRadioManager radioManager;
@@ -80,6 +144,42 @@ namespace Triquetra.Input
                     helmetController.ToggleVisor();
                 }
             }
+            
+            public static void CloseVisor(Binding binding, int joystickValue)
+            {
+                if (helmetController == null)
+                    helmetController = FindHelmetController();
+                if (helmetController == null)
+                    return;
+
+                if (binding.GetButtonPressed(joystickValue))
+                {
+                    var visorDownField = helmetController.GetType().GetField("visorDown", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (visorDownField == null)
+                        return;
+                    
+                    visorDownField.SetValue(helmetController, false);
+                    helmetController.ToggleVisor();
+                }
+            }
+            
+            public static void OpenVisor(Binding binding, int joystickValue)
+            {
+                if (helmetController == null)
+                    helmetController = FindHelmetController();
+                if (helmetController == null)
+                    return;
+
+                if (binding.GetButtonPressed(joystickValue))
+                {
+                    var visorDownField = helmetController.GetType().GetField("visorDown", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (visorDownField == null)
+                        return;
+                    
+                    visorDownField.SetValue(helmetController, true);
+                    helmetController.ToggleVisor();
+                }
+            }
 
             public static void ToggleNVG(Binding binding, int joystickValue, int delta = 1)
             {
@@ -90,6 +190,42 @@ namespace Triquetra.Input
 
                 if (binding.GetButtonPressed(joystickValue))
                 {
+                    helmetController.ToggleNVG();
+                }
+            }
+            
+            public static void NVGOn(Binding binding, int joystickValue)
+            {
+                if (helmetController == null)
+                    helmetController = FindHelmetController();
+                if (helmetController == null)
+                    return;
+
+                if (binding.GetButtonPressed(joystickValue))
+                {
+                    var nvgEnabledField = helmetController.GetType().GetField("nvgEnabled", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (nvgEnabledField == null)
+                        return;
+                    
+                    nvgEnabledField.SetValue(helmetController, false);
+                    helmetController.ToggleNVG();
+                }
+            }
+            
+            public static void NVGOff(Binding binding, int joystickValue)
+            {
+                if (helmetController == null)
+                    helmetController = FindHelmetController();
+                if (helmetController == null)
+                    return;
+
+                if (binding.GetButtonPressed(joystickValue))
+                {
+                    var nvgEnabledField = helmetController.GetType().GetField("nvgEnabled", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (nvgEnabledField == null)
+                        return;
+                    
+                    nvgEnabledField.SetValue(helmetController, true);
                     helmetController.ToggleNVG();
                 }
             }
@@ -131,6 +267,19 @@ namespace Triquetra.Input
                 if (binding.GetButtonPressed(joystickValue))
                 {
                     Interactions.MoveLever(flaps, 1, false);
+                }
+            }
+            
+            public static void SetFlaps(Binding binding, int joystickValue, int flapsState)
+            {
+                if (flaps == null)
+                    flaps = FindFlaps();
+                if (flaps == null)
+                    return;
+                
+                if (binding.GetButtonPressed(joystickValue))
+                {
+                    Interactions.SetLever(flaps, flapsState);
                 }
             }
 
@@ -388,31 +537,24 @@ namespace Triquetra.Input
                 }
             }
 
-            public static bool ThumbstickUp = false;
-            public static bool ThumbstickRight = false;
-            public static bool ThumbstickDown = false;
-            public static bool ThumbstickLeft = false;
-            private static bool thumbstickWasZero = false;
-            private static bool thumbstickWasMoving = false;
+            public static float ThumbstickX;
+            public static float ThumbstickY;
+            private static bool thumbstickWasZero;
+            private static bool thumbstickWasMoving;
             public static void UpdateThumbstick()
             {
                 if (joystick == null)
                     return;
 
-                Vector3 vector = new Vector3();
-                if (ThumbstickRight)
-                    vector.x += 1;
-                if (ThumbstickLeft)
-                    vector.x -= 1;
-                if (ThumbstickUp)
-                    vector.y += 1;
-                if (ThumbstickDown)
-                    vector.y -= 1;
+                var vector = new Vector3();
+                vector.x += ThumbstickX;
+                vector.y += ThumbstickY;
+                var vector2 = Vector2.MoveTowards(vector, Vector2.zero, joystick.thumbStickDeadzone) * (float) (1.0 / (1.0 - joystick.thumbStickDeadzone));
 
-                if (vector != Vector3.zero)
+                if (vector2 != Vector2.zero)
                 {
                     thumbstickWasZero = false;
-                    joystick.OnSetThumbstick?.Invoke(vector);
+                    joystick.OnSetThumbstick?.Invoke((Vector3)vector2);
                     thumbstickWasMoving = true;
                 }
                 else
@@ -436,19 +578,25 @@ namespace Triquetra.Input
                 switch (binding.ThumbstickDirection)
                 {
                     case ThumbstickDirection.Up:
-                        ThumbstickUp = binding.GetButtonPressed(joystickValue);
+                        ThumbstickY = binding.GetButtonPressed(joystickValue) ? 1 : 0;
                         break;
                     case ThumbstickDirection.Down:
-                        ThumbstickDown = binding.GetButtonPressed(joystickValue);
+                        ThumbstickY = binding.GetButtonPressed(joystickValue) ? -1 : 0;
                         break;
                     case ThumbstickDirection.Right:
-                        ThumbstickRight = binding.GetButtonPressed(joystickValue);
+                        ThumbstickX = binding.GetButtonPressed(joystickValue) ? 1 : 0;
                         break;
                     case ThumbstickDirection.Left:
-                        ThumbstickLeft = binding.GetButtonPressed(joystickValue);
+                        ThumbstickX = binding.GetButtonPressed(joystickValue) ? -1 : 0;
                         break;
                     case ThumbstickDirection.Press:
                         ThumbstickButton(binding, joystickValue);
+                        break;
+                    case ThumbstickDirection.XAxis:
+                        ThumbstickX = (binding.GetAxisAsFloat(joystickValue) - 0.5f) * 2f;
+                        break;
+                    case ThumbstickDirection.YAxis:
+                        ThumbstickY = (binding.GetAxisAsFloat(joystickValue) - 0.5f) * 2f;
                         break;
                 }
             }
@@ -475,6 +623,159 @@ namespace Triquetra.Input
                     menuButtonPressed = false;
                     joystick.OnMenuButtonUp?.Invoke();
                 }
+            }
+        }
+
+        public static class Autopilot
+        {
+            private static APKnobAltAdjust altKnob;
+            private static APKnobSpeedDialAdjust speedKnob;
+            private static DashHSI hsi;
+            
+            
+            private static bool headingLeftPressed;
+            private static bool headingRightPressed;
+            private static bool altitudeUpPressed;
+            private static bool altitudeDownPressed;
+            private static bool speedUpPressed;
+            private static bool speedDownPressed;
+            private static bool courseLeftPressed;
+            private static bool courseRightPressed;
+            
+            public static void SetHeading(Binding binding, int joystickValue, int delta)
+            {
+                bool buttonPressed = binding.GetButtonPressed(joystickValue);
+                if (delta > 0)
+                    headingRightPressed = buttonPressed;
+                else
+                    headingLeftPressed = buttonPressed;
+            }
+            
+            public static void SetAltitude(Binding binding, int joystickValue, int delta)
+            {
+                bool buttonPressed = binding.GetButtonPressed(joystickValue);
+                if (delta > 0)
+                    altitudeUpPressed = buttonPressed;
+                else
+                    altitudeDownPressed = buttonPressed;
+            }
+            
+            public static void SetSpeed(Binding binding, int joystickValue, int delta)
+            {
+                bool buttonPressed = binding.GetButtonPressed(joystickValue);
+                if (delta > 0)
+                    speedUpPressed = buttonPressed;
+                else
+                    speedDownPressed = buttonPressed;
+            }
+            
+            public static void SetCourse(Binding binding, int joystickValue, int delta)
+            {
+                bool buttonPressed = binding.GetButtonPressed(joystickValue);
+                if (delta > 0)
+                    courseRightPressed = buttonPressed;
+                else
+                    courseLeftPressed = buttonPressed;
+            }
+
+            private static float headingRate;
+            private static float timeHeadingHeld;
+            
+            private static float altitudeRate;
+            private static float timeAltitudeHeld;
+            
+            private static float speedRate;
+            private static float timeSpeedHeld;
+            
+            private static float courseRate;
+            private static float timeCourseHeld;
+
+            public static void UpdateAutopilot()
+            {
+                if (altKnob == null)
+                    altKnob = FindAltitudeAdjust();
+                if (speedKnob == null)
+                    speedKnob = FindSpeedAdjust();
+                if (hsi == null)
+                    hsi = FindHSI();
+
+                float delta = Time.deltaTime;
+                
+                if (headingLeftPressed && hsi != null)
+                {
+                    timeHeadingHeld += delta;
+                    float rate = (2 + timeHeadingHeld / 3 * 58) / 80f * delta;
+                    hsi.OnTwistHdgKnob(rate);
+                }
+                else if (headingRightPressed && hsi != null)
+                {
+                    timeHeadingHeld += delta;
+                    float rate = (2 + timeHeadingHeld / 3 * 58) / 80f * delta;
+                    hsi.OnTwistHdgKnob(-rate);
+                }
+                else if (!headingLeftPressed && !headingRightPressed)
+                    timeHeadingHeld = 0;
+                
+                if (altitudeUpPressed && altKnob != null)
+                {
+                    timeAltitudeHeld += delta;
+                    float rate = (25 + timeAltitudeHeld / 3 * 725) / 1000f * delta;
+                    altKnob.OnTwistDelta(-rate);
+                }
+                else if (altitudeDownPressed && altKnob != null)
+                {
+                    timeAltitudeHeld += delta;
+                    float rate = (25 + timeAltitudeHeld / 3 * 725) / 1000f * delta;
+                    altKnob.OnTwistDelta(rate);
+                }
+                else if (!altitudeUpPressed && !altitudeDownPressed)
+                    timeAltitudeHeld = 0;
+                
+                
+                if (speedUpPressed && speedKnob != null)
+                {
+                    timeSpeedHeld += delta;
+                    float rate = (4 + timeSpeedHeld / 3 * 110) / 150f * delta;
+                    speedKnob.OnTwistDelta(-rate);
+                }
+                else if (speedDownPressed  && speedKnob != null)
+                {
+                    timeSpeedHeld += delta;
+                    float rate = (4 + timeSpeedHeld / 3 * 110) / 150f * delta;
+                    speedKnob.OnTwistDelta(rate);
+                }
+                else if (!speedUpPressed && !speedDownPressed)
+                    timeSpeedHeld = 0;
+                
+                if (courseLeftPressed && hsi != null)
+                {
+                    timeCourseHeld += delta;
+                    float rate = (2 + timeCourseHeld / 3 * 58) / 80f * delta;
+                    hsi.OnTwistCrsKnob(rate);
+                }
+                else if (courseRightPressed && hsi != null)
+                {
+                    timeCourseHeld += delta;
+                    float rate = (2 + timeCourseHeld / 3 * 58) / 80f * delta;
+                    hsi.OnTwistCrsKnob(-rate);   
+                }
+                else if (!courseLeftPressed && !courseRightPressed)
+                    timeCourseHeld = 0;
+            }
+            
+            internal static APKnobAltAdjust FindAltitudeAdjust()
+            {
+                return GameObject.FindObjectOfType<APKnobAltAdjust>(false);
+            }
+            
+            internal static APKnobSpeedDialAdjust FindSpeedAdjust()
+            {
+                return GameObject.FindObjectOfType<APKnobSpeedDialAdjust>(false);
+            }
+            
+            internal static DashHSI FindHSI()
+            {
+                return GameObject.FindObjectOfType<DashHSI>(false);
             }
         }
 
