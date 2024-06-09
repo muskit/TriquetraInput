@@ -38,8 +38,8 @@ namespace Triquetra.Input
             imguiObject.AddComponent<TriquetraInputBinders>();
             GameObject.DontDestroyOnLoad(imguiObject);
 
-            bindingsPath = PilotSaveManager.saveDataPath + "/triquetrainput.xml";
-            LoadBindings();
+            bindingsPath = PilotSaveManager.saveDataPath;
+            LoadBindings("triquetrainput.xml");
         }
 
         public void Disable()
@@ -54,7 +54,7 @@ namespace Triquetra.Input
             return buildIndex == 7 || buildIndex == 11;
         }
 
-        public static void SaveBindings()
+        public static void SaveBindings(string filename)
         {
             XmlSerializer serializer = new XmlSerializer(Binding.Bindings.GetType());
             using (StringWriter writer = new StringWriter())
@@ -62,18 +62,19 @@ namespace Triquetra.Input
                 serializer.Serialize(writer, Binding.Bindings);
                 Instance.Log(writer.ToString());
             }
-            using (TextWriter writer = new StreamWriter(bindingsPath))
+            using (TextWriter writer = new StreamWriter($"{bindingsPath}/{filename}"))
             {
                 serializer.Serialize(writer, Binding.Bindings);
             }
         }
 
-        public static void LoadBindings()
+        public static void LoadBindings(string filename)
         {
+            Binding.Bindings.Clear();
             XmlSerializer serializer = new XmlSerializer(Binding.Bindings.GetType());
-            if (File.Exists(bindingsPath))
+            if (File.Exists($"{bindingsPath}/{filename}"))
             {
-                using (Stream reader = new FileStream(bindingsPath, FileMode.Open))
+                using (Stream reader = new FileStream($"{bindingsPath}/{filename}", FileMode.Open))
                 {
                     lock (Binding.Bindings)
                     {

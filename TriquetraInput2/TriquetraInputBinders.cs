@@ -28,6 +28,7 @@ namespace Triquetra.Input
         public bool Enabled = true;
         private string textFilter = "";
         private Dictionary<Binding, bool> collapsedBindings = new Dictionary<Binding, bool>();
+        private string activeBindings = "Default";
 
         public void OnGUI()
         {
@@ -35,6 +36,8 @@ namespace Triquetra.Input
                 windowRect = GUI.Window(500, windowRect, DoWindow, "Binders Display");
         }
 
+        private const int loadSaveButtonWidth = 148;
+        
         void DoWindow(int windowID)
         {
             GUI.DragWindow(new Rect(0, 0, 10000, 20));
@@ -44,18 +47,189 @@ namespace Triquetra.Input
             Enabled = GUILayout.Toggle(Enabled, "Enabled");
 
             GUI.enabled = Enabled;
-
+            
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Active bindings");
+                GUILayout.Label(activeBindings);
+            }
+            GUILayout.EndHorizontal();
+            
             GUILayout.BeginHorizontal();
             {
                 try
                 {
-                    if (GUILayout.Button("Load"))
+                    GUILayout.Label("Default: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
                     {
-                        Plugin.LoadBindings();
+                        Plugin.LoadBindings("triquetrainput.xml");
+                        activeBindings = "Default";
                     }
-                    if (GUILayout.Button("Save"))
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
                     {
-                        Plugin.SaveBindings();
+                        Plugin.SaveBindings("triquetrainput.xml");
+                        activeBindings = "Default";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Instance.Log(e.Message);
+                }
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            {
+                try
+                {
+                    GUILayout.Label("AV-42C: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.LoadBindings("triquetrainput_av42c.xml");
+                        activeBindings = "AV-42C";
+                    }
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.SaveBindings("triquetrainput_av42c.xml");
+                        activeBindings = "AV-42C";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Instance.Log(e.Message);
+                }
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            {
+                try
+                {
+                    GUILayout.Label("F/A-26B: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.LoadBindings("triquetrainput_fa26b.xml");
+                        activeBindings = "F/A-26B";
+                    }
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.SaveBindings("triquetrainput_fa26b.xml");
+                        activeBindings = "F/A-26B";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Instance.Log(e.Message);
+                }
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            {
+                try
+                {
+                    GUILayout.Label("F-45A: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.LoadBindings("triquetrainput_f45a.xml");
+                        activeBindings = "F-45A";
+                    }
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.SaveBindings("triquetrainput_f45a.xml");
+                        activeBindings = "F-45A";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Instance.Log(e.Message);
+                }
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            {
+                try
+                {
+                    GUILayout.Label("AH-94 Front: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.LoadBindings("triquetrainput_ah94_front.xml");
+                        activeBindings = "AH-94 Front";
+                    }
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.SaveBindings("triquetrainput_ah94_front.xml");
+                        activeBindings = "AH-94 Front";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Instance.Log(e.Message);
+                }
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            {
+                try
+                {
+                    GUILayout.Label("AH-94 Rear: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.LoadBindings("triquetrainput_ah94_rear.xml");
+                        activeBindings = "AH-94 Rear";
+                    }
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.SaveBindings("triquetrainput_ah94_rear.xml");
+                        activeBindings = "AH-94 Rear";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Instance.Log(e.Message);
+                }
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            {
+                try
+                {
+                    GUILayout.Label("T-55 Front: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.LoadBindings("triquetrainput_t55_front.xml");
+                        activeBindings = "T-55 Front";
+                    }
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.SaveBindings("triquetrainput_t55_front.xml");
+                        activeBindings = "T-55 Front";
+                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.Instance.Log(e.Message);
+                }
+            }
+            GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            {
+                try
+                {
+                    GUILayout.Label("T-55 Rear: ");
+                    if (GUILayout.Button("Load", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.LoadBindings("triquetrainput_t55_rear.xml");
+                        activeBindings = "T-55 Rear";
+                    }
+                    if (GUILayout.Button("Save", GUILayout.Width(loadSaveButtonWidth)))
+                    {
+                        Plugin.SaveBindings("triquetrainput_t55_rear.xml");
+                        activeBindings = "T-55 Rear";
                     }
                 }
                 catch (Exception e)
@@ -704,7 +878,7 @@ namespace Triquetra.Input
             {
                 if (GUILayout.Button("Create Joystick Binding"))
                 {
-                    Binding.Bindings.Add(new Binding());
+                    Binding.Bindings.Add(new Binding(false));
                 }
 
                 if (GUILayout.Button("Create Keyboard Binding"))

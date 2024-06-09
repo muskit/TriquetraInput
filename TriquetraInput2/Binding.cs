@@ -96,8 +96,8 @@ namespace Triquetra.Input
 
         public Binding()
         {
-            NextJoystick();
         }
+        
         public Binding(bool isKeyboard)
         {
             if (isKeyboard)

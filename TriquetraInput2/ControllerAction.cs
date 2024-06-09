@@ -678,16 +678,10 @@ namespace Triquetra.Input
                     courseLeftPressed = buttonPressed;
             }
 
-            private static float headingRate;
+
             private static float timeHeadingHeld;
-            
-            private static float altitudeRate;
             private static float timeAltitudeHeld;
-            
-            private static float speedRate;
             private static float timeSpeedHeld;
-            
-            private static float courseRate;
             private static float timeCourseHeld;
 
             public static void UpdateAutopilot()
