@@ -55,7 +55,8 @@ namespace Triquetra.Input
     public enum VRInteractType
     {
         Default,
-        FixedValue
+        FixedValue,
+        Anticlockwise
     }
 
     public enum MFDAction

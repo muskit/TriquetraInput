@@ -273,22 +273,33 @@ namespace Triquetra.Input
                     if (interactable == null)
                         return;
                     
-                    switch (VRInteractType)
+                    if (IsOffsetAxis)
+                        Interactions.Interact(interactable, GetAxisAsFloat(joystickValue));
+                    else
                     {
-                        case VRInteractType.FixedValue:
-                            if (GetButtonPressed(joystickValue))
-                                Interactions.Interact(interactable, Value);
-                            else
-                                Interactions.AntiInteract(interactable);
-                            break;
-                        case VRInteractType.Default:
-                            if (GetButtonPressed(joystickValue))
-                                Interactions.Interact(interactable);
-                            else
-                                Interactions.AntiInteract(interactable);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        switch (VRInteractType)
+                        {
+                            case VRInteractType.FixedValue:
+                                if (GetButtonPressed(joystickValue))
+                                    Interactions.Interact(interactable, Value);
+                                else
+                                    Interactions.AntiInteract(interactable);
+                                break;
+                            case VRInteractType.Default:
+                                if (GetButtonPressed(joystickValue))
+                                    Interactions.Interact(interactable, antiClockwise: false);
+                                else
+                                    Interactions.AntiInteract(interactable);
+                                break;
+                            case VRInteractType.Anticlockwise:
+                                if (GetButtonPressed(joystickValue))
+                                    Interactions.Interact(interactable, antiClockwise: true);
+                                else
+                                    Interactions.AntiInteract(interactable);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
                 }
                 else if (OutputAction == ControllerAction.MFDInteract || OutputAction == ControllerAction.MMFDInteract)

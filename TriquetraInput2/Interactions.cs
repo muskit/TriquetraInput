@@ -5,11 +5,15 @@ namespace Triquetra.Input
 {
     public static class Interactions
     {
-        const float knobTwistSpeed = 0.025f;
-        public static void TwistKnob(VRTwistKnob twistKnob, bool antiClockwise, float delta = knobTwistSpeed)
+        const float knobTwistSpeed = 0.1f;
+        public static void MoveTwistKnob(VRTwistKnob twistKnob, bool antiClockwise, float delta = knobTwistSpeed)
         {
-            //twistKnob.OnTwistDelta?.Invoke(antiClockwise ? -0.1f : 0.1f);
             twistKnob.SetKnobValue(twistKnob.currentValue + (antiClockwise ? -knobTwistSpeed : knobTwistSpeed));
+        }
+        
+        public static void SetTwistKnob(VRTwistKnob twistKnob, float value)
+        {
+            twistKnob.SetKnobValue(value);
         }
 
         public static void MoveLever(VRLever lever, int delta = 1, bool clamp = false)
@@ -53,9 +57,10 @@ namespace Triquetra.Input
             throttle.RemoteSetThrottleForceEvents(Math.Min(Math.Max(value, 0f), 1f));
         }
 
-        public static void Interact(VRInteractable interactable, int value = -1)
+        public static void Interact(VRInteractable interactable, float value = float.MinValue, bool antiClockwise = true)
         {
             VRLever lever = interactable.GetComponent<VRLever>();
+            VRTwistKnob twistKnob = interactable.GetComponent<VRTwistKnob>();
             VRTwistKnobInt twistKnobInt = interactable.GetComponent<VRTwistKnobInt>();
             VRButton button = interactable.GetComponent<VRButton>();
             EjectHandle eject = interactable.GetComponent<EjectHandle>();
@@ -64,15 +69,22 @@ namespace Triquetra.Input
 
             if (lever != null)
             {
-                if (value != -1)
-                    SetLever(lever, value);
+                if (value != float.MinValue)
+                    SetLever(lever, (int)value);
                 else
                     MoveLever(lever, 1);
             }
+            else if (twistKnob != null)
+            {
+                if (value != float.MinValue)
+                    SetTwistKnob(twistKnob, value);
+                else
+                    MoveTwistKnob(twistKnob, antiClockwise);
+            }
             else if (twistKnobInt != null)
             {
-                if (value != -1)
-                    SetTwistKnobInt(twistKnobInt, value);
+                if (value != float.MinValue)
+                    SetTwistKnobInt(twistKnobInt, (int)value);
                 else
                     MoveTwistKnobInt(twistKnobInt, 1);
             }
@@ -90,7 +102,7 @@ namespace Triquetra.Input
             }
             else if (door != null)
             {
-                if (value != - 1)
+                if (value != float.MinValue)
                     door.RemoteSetState(value);
                 else
                     door.RemoteSetState(door.isLatched ? 1f : 0f); // 1f = to open, 0f = to close
