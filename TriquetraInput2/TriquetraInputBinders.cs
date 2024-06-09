@@ -776,38 +776,41 @@ namespace Triquetra.Input
                                 binding.VRInteractName = GUILayout.TextField(binding.VRInteractName);
                             }
                             GUILayout.EndHorizontal();
-                            
-                            GUILayout.BeginHorizontal();
-                            {
-                                GUILayout.Label("└ VRInteract Type: " + binding.VRInteractType);
-                                if (GUILayout.Button(binding.VRInteractTypeSelectOpen ? "Cancel" : "Select"))
-                                {
-                                    binding.VRInteractTypeSelectOpen = !binding.VRInteractTypeSelectOpen;
-                                }
-                            }
-                            GUILayout.EndHorizontal();
 
-                            if (binding.VRInteractTypeSelectOpen)
-                            {
-                                foreach (VRInteractType interactType in Enum.GetValues(typeof(VRInteractType)))
-                                {
-                                    if (GUILayout.Button(interactType.ToString()))
-                                    {
-                                        binding.VRInteractType = interactType;
-                                        binding.VRInteractTypeSelectOpen = false;
-                                    }
-                                }
-                            }
-                            
-                            if (binding.VRInteractType == VRInteractType.FixedValue)
+                            if (!binding.IsOffsetAxis)
                             {
                                 GUILayout.BeginHorizontal();
                                 {
-                                    GUILayout.Label("  └ Fixed Value: ");
-                                    GUILayout.Label(binding.Value.ToString());
-                                    binding.Value = (int)GUILayout.HorizontalSlider(binding.Value, 0, 8);
+                                    GUILayout.Label("└ VRInteract Type: " + binding.VRInteractType);
+                                    if (GUILayout.Button(binding.VRInteractTypeSelectOpen ? "Cancel" : "Select"))
+                                    {
+                                        binding.VRInteractTypeSelectOpen = !binding.VRInteractTypeSelectOpen;
+                                    }
                                 }
                                 GUILayout.EndHorizontal();
+
+                                if (binding.VRInteractTypeSelectOpen)
+                                {
+                                    foreach (VRInteractType interactType in Enum.GetValues(typeof(VRInteractType)))
+                                    {
+                                        if (GUILayout.Button(interactType.ToString()))
+                                        {
+                                            binding.VRInteractType           = interactType;
+                                            binding.VRInteractTypeSelectOpen = false;
+                                        }
+                                    }
+                                }
+
+                                if (binding.VRInteractType == VRInteractType.FixedValue)
+                                {
+                                    GUILayout.BeginHorizontal();
+                                    {
+                                        GUILayout.Label("  └ Fixed Value: ");
+                                        GUILayout.Label(binding.Value.ToString());
+                                        binding.Value = (int)GUILayout.HorizontalSlider(binding.Value, 0, 8);
+                                    }
+                                    GUILayout.EndHorizontal();
+                                }
                             }
                         }
                         else if (binding.OutputAction == ControllerAction.MFDInteract || binding.OutputAction == ControllerAction.MMFDInteract)
