@@ -458,12 +458,9 @@ namespace Triquetra.Input
             {
                 var joysticks = GameObject.FindObjectsOfType<VRJoystick>(false);
 
-                var joystick = joysticks.FirstOrDefault();
-                if (joysticks.Length > 1)
-                {
-                    joystick = joysticks.FirstOrDefault(stick => stick.name == "joyInteractable_sideFront");
-                }
-
+                var joystick = joysticks.FirstOrDefault(stick => stick.name == "joyInteractable_sideFront") ??
+                        joysticks.FirstOrDefault();
+                    
                 return joystick;
             }
 
