@@ -456,7 +456,12 @@ namespace Triquetra.Input
 
             internal static VRJoystick FindJoystick()
             {
-                return GameObject.FindObjectOfType<VRJoystick>(false);
+                var joysticks = GameObject.FindObjectsOfType<VRJoystick>(false);
+
+                var joystick = joysticks.FirstOrDefault(stick => stick.name == "joyInteractable_sideFront") ??
+                        joysticks.FirstOrDefault();
+                    
+                return joystick;
             }
 
             private static bool menuButtonPressed = false;
