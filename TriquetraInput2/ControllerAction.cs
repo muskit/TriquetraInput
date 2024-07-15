@@ -30,7 +30,8 @@ namespace Triquetra.Input
         NightVisionGoggles,
         PTT,
         VRInteract,
-        Print
+        Print,
+        DumpVRInteractables
     }
 
     public static class ControllerActions
@@ -481,6 +482,15 @@ namespace Triquetra.Input
         public static void Print(Binding binding, int joystickValue)
         {
             Plugin.Write($"Triquetra.Input: Axis is {binding.Offset}. Value is {joystickValue}");
+        }
+
+        public static void DumpVRInteractables(Binding binding, int joystickValue)
+        {
+            Plugin.Write("Triquetra.VRInteractables:");
+            foreach (VRInteractable x in GameObject.FindObjectsOfType<VRInteractable>(false))
+            {
+                Plugin.Write($"  - {x.interactableName}");
+            }
         }
 
         internal static void TryGetSticks()
