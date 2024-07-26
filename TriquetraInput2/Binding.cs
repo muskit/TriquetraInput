@@ -237,6 +237,10 @@ namespace Triquetra.Input
                             Interactions.AntiInteract(interactable);
                     }
                 }
+                else if (OutputAction == ControllerAction.DumpVRInteractables)
+                {
+                    ControllerActions.DumpVRInteractables(this, joystickValue);
+                }
             }
         }
 
